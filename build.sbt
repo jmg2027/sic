@@ -15,7 +15,7 @@ lazy val sicGen = (project in file("sic-gen"))
   .settings(
     name := "sic-gen",
     libraryDependencies ++= Seq(
-      "io.circle" %% "circle-yaml" % "0.15.1",
+      "io.circle" %% "circle-yaml" % "0.14.2",
       "com.lihaoyi" %% "pprint" % "0.8.1"
     )
   )
