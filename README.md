@@ -14,5 +14,6 @@ latency‑free RISC‑V instruction semantics.
 sbt fmt check
 
 # export catalogue to YAML
-sbt "sicGen/runMain sicgen.YamlExport" > generated/sic.yaml
+sbt "sicGen/runMain sicgen.YamlExport"
+# output written to generated/sic.yaml
 ```

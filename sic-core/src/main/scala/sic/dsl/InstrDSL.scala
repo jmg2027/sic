@@ -8,7 +8,13 @@ object InstrDSL {
       format: Format,
       opcode: Int
   )(body: (RegId, Imm) => List[Stmt]): InstrDesc = {
-    // 추후 BitPattern 계산 로직 삽입
-    ???
+    val semantics = body(0, 0)
+    InstrDesc(
+      name = name,
+      format = format,
+      decodeKey = BitPattern.from(opcode, 7),
+      fields = Map.empty,
+      semantics = semantics
+    )
   }
 }
