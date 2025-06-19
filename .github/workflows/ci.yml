@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - name: Install sbt
+        uses: coursier/setup-action@v1
         with:
-          distribution: temurin
-          java-version: '21'
+          jvm: temurin:21
+          apps: sbt
       - name: Run sbt fmt check
         run: sbt fmt check
