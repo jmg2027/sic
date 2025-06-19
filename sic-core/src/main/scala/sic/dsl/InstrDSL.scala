@@ -1,5 +1,6 @@
 package sic.dsl
-import sic.*, sic.primitives.*
+import sic._
+import sic.primitives._
 
 object InstrDSL {
   def instr(

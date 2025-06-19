@@ -10,3 +10,7 @@ hs_err_pid*
 *.metals*
 *.vscode*
 *metals.sbt*
+.bsp/
+
+# generated artifacts
+generated/
