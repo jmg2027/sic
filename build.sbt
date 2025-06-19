@@ -15,7 +15,7 @@ lazy val sicGen = (project in file("sic-gen"))
   .settings(
     name := "sic-gen",
     libraryDependencies ++= Seq(
-      "io.circle" %% "circe-yaml" % "0.15.1",
+      "io.circe" %% "circe-yaml" % "0.15.1",
       "com.lihaoyi" %% "pprint" % "0.8.1"
     )
   )
@@ -23,5 +23,7 @@ lazy val sicGen = (project in file("sic-gen"))
 lazy val root = (project in file("."))
   .aggregate(sicCore, sicGen)
   .settings(
-    name := "sic"
+    name := "sic",
+    addCommandAlias("fmt", "scalafmtAll; scalafmtSbt"),
+    addCommandAlias("check", "scalafmtCheckAll; Test/compile")
   )
