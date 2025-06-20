@@ -14,3 +14,8 @@ hs_err_pid*
 
 # generated artifacts
 generated/
+
+# compressed files
+*tar
+*tar.gz
+*zip
