@@ -17,3 +17,5 @@ sbt fmt check
 sbt "sicGen/runMain sicgen.YamlExport"
 # output written to generated/sic.yaml
 ```
+## Reference
+* https://github.com/riscv/riscv-isa-manual/blob/main/src/rv-32-64g.adoc - instruction formats are well-defined here
