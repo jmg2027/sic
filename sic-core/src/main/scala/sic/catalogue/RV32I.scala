@@ -69,19 +69,24 @@ object RV32I {
   // TODO: ADDI, SLTI, … loads, etc.
 
   // ------------------------------------------------------------------
-  // S‑type (stores)  — stub
+  // S‑type (stores)
   // ------------------------------------------------------------------
-  // val SW: InstrDesc = …
+  val SW: InstrDesc = instr("SW", S, opcode = 0x23) { List() }
 
   // ------------------------------------------------------------------
-  // B‑type (branches) — stub
+  // B‑type (branches)
   // ------------------------------------------------------------------
-  // val BEQ: InstrDesc = …
+  val BEQ: InstrDesc = instr("BEQ", B, opcode = 0x63) { List() }
 
   // ------------------------------------------------------------------
-  // R‑type (reg‑reg ALU) — stub
+  // R‑type (reg‑reg ALU)
   // ------------------------------------------------------------------
-  // val ADD: InstrDesc = …
+  val ADD: InstrDesc = instr("ADD", R, opcode = 0x33) { List() }
+
+  // ------------------------------------------------------------------
+  // CSR‑type (system)
+  // ------------------------------------------------------------------
+  val CSRRW: InstrDesc = instr("CSRRW", CSR, opcode = 0x73) { List() }
 
   // ------------------------------------------------------------------
   // Public aggregated vector
@@ -94,7 +99,14 @@ object RV32I {
       // UJ
       JAL,
       // I
-      JALR
-      // S, B, R … (추가 예정)
+      JALR,
+      // S
+      SW,
+      // B
+      BEQ,
+      // R
+      ADD,
+      // CSR
+      CSRRW
     )
 }
