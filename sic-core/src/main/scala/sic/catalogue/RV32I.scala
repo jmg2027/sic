@@ -62,26 +62,68 @@ object RV32I {
   }
 
   // ------------------------------------------------------------------
-  // I‑type  (JALR, … stub)
+  // I‑type (loads, JALR, immediates)
   // ------------------------------------------------------------------
   val JALR: InstrDesc = instr("JALR", I, opcode = 0x67) { List() }
+  val LB: InstrDesc = instr("LB", I, opcode = 0x03) { List() }
+  val LH: InstrDesc = instr("LH", I, opcode = 0x03) { List() }
+  val LW: InstrDesc = instr("LW", I, opcode = 0x03) { List() }
+  val LBU: InstrDesc = instr("LBU", I, opcode = 0x03) { List() }
+  val LHU: InstrDesc = instr("LHU", I, opcode = 0x03) { List() }
+  val ADDI: InstrDesc = instr("ADDI", I, opcode = 0x13) { List() }
+  val SLTI: InstrDesc = instr("SLTI", I, opcode = 0x13) { List() }
+  val SLTIU: InstrDesc = instr("SLTIU", I, opcode = 0x13) { List() }
+  val XORI: InstrDesc = instr("XORI", I, opcode = 0x13) { List() }
+  val ORI: InstrDesc = instr("ORI", I, opcode = 0x13) { List() }
+  val ANDI: InstrDesc = instr("ANDI", I, opcode = 0x13) { List() }
+  val SLLI: InstrDesc = instr("SLLI", I, opcode = 0x13) { List() }
+  val SRLI: InstrDesc = instr("SRLI", I, opcode = 0x13) { List() }
+  val SRAI: InstrDesc = instr("SRAI", I, opcode = 0x13) { List() }
+  val FENCE: InstrDesc = instr("FENCE", I, opcode = 0x0f) { List() }
+  val FENCE_I: InstrDesc = instr("FENCE.I", I, opcode = 0x0f) { List() }
 
-  // TODO: ADDI, SLTI, … loads, etc.
+  // ------------------------------------------------------------------
+  // S‑type (stores)
+  // ------------------------------------------------------------------
+  val SB: InstrDesc = instr("SB", S, opcode = 0x23) { List() }
+  val SH: InstrDesc = instr("SH", S, opcode = 0x23) { List() }
+  val SW: InstrDesc = instr("SW", S, opcode = 0x23) { List() }
 
   // ------------------------------------------------------------------
-  // S‑type (stores)  — stub
+  // B‑type (branches)
   // ------------------------------------------------------------------
-  // val SW: InstrDesc = …
+  val BEQ: InstrDesc = instr("BEQ", B, opcode = 0x63) { List() }
+  val BNE: InstrDesc = instr("BNE", B, opcode = 0x63) { List() }
+  val BLT: InstrDesc = instr("BLT", B, opcode = 0x63) { List() }
+  val BGE: InstrDesc = instr("BGE", B, opcode = 0x63) { List() }
+  val BLTU: InstrDesc = instr("BLTU", B, opcode = 0x63) { List() }
+  val BGEU: InstrDesc = instr("BGEU", B, opcode = 0x63) { List() }
 
   // ------------------------------------------------------------------
-  // B‑type (branches) — stub
+  // R‑type (reg‑reg ALU)
   // ------------------------------------------------------------------
-  // val BEQ: InstrDesc = …
+  val ADD: InstrDesc = instr("ADD", R, opcode = 0x33) { List() }
+  val SUB: InstrDesc = instr("SUB", R, opcode = 0x33) { List() }
+  val SLL: InstrDesc = instr("SLL", R, opcode = 0x33) { List() }
+  val SLT: InstrDesc = instr("SLT", R, opcode = 0x33) { List() }
+  val SLTU: InstrDesc = instr("SLTU", R, opcode = 0x33) { List() }
+  val XOR: InstrDesc = instr("XOR", R, opcode = 0x33) { List() }
+  val SRL: InstrDesc = instr("SRL", R, opcode = 0x33) { List() }
+  val SRA: InstrDesc = instr("SRA", R, opcode = 0x33) { List() }
+  val OR: InstrDesc = instr("OR", R, opcode = 0x33) { List() }
+  val AND: InstrDesc = instr("AND", R, opcode = 0x33) { List() }
 
   // ------------------------------------------------------------------
-  // R‑type (reg‑reg ALU) — stub
+  // CSR‑type (system)
   // ------------------------------------------------------------------
-  // val ADD: InstrDesc = …
+  val ECALL: InstrDesc = instr("ECALL", CSR, opcode = 0x73) { List() }
+  val EBREAK: InstrDesc = instr("EBREAK", CSR, opcode = 0x73) { List() }
+  val CSRRW: InstrDesc = instr("CSRRW", CSR, opcode = 0x73) { List() }
+  val CSRRS: InstrDesc = instr("CSRRS", CSR, opcode = 0x73) { List() }
+  val CSRRC: InstrDesc = instr("CSRRC", CSR, opcode = 0x73) { List() }
+  val CSRRWI: InstrDesc = instr("CSRRWI", CSR, opcode = 0x73) { List() }
+  val CSRRSI: InstrDesc = instr("CSRRSI", CSR, opcode = 0x73) { List() }
+  val CSRRCI: InstrDesc = instr("CSRRCI", CSR, opcode = 0x73) { List() }
 
   // ------------------------------------------------------------------
   // Public aggregated vector
@@ -93,8 +135,54 @@ object RV32I {
       AUIPC,
       // UJ
       JAL,
-      // I
-      JALR
-      // S, B, R … (추가 예정)
+      // I loads & immediates
+      JALR,
+      LB,
+      LH,
+      LW,
+      LBU,
+      LHU,
+      ADDI,
+      SLTI,
+      SLTIU,
+      XORI,
+      ORI,
+      ANDI,
+      SLLI,
+      SRLI,
+      SRAI,
+      FENCE,
+      FENCE_I,
+      // S
+      SB,
+      SH,
+      SW,
+      // B
+      BEQ,
+      BNE,
+      BLT,
+      BGE,
+      BLTU,
+      BGEU,
+      // R
+      ADD,
+      SUB,
+      SLL,
+      SLT,
+      SLTU,
+      XOR,
+      SRL,
+      SRA,
+      OR,
+      AND,
+      // CSR/system
+      ECALL,
+      EBREAK,
+      CSRRW,
+      CSRRS,
+      CSRRC,
+      CSRRWI,
+      CSRRSI,
+      CSRRCI
     )
 }

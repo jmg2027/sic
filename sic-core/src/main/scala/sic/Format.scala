@@ -22,3 +22,7 @@ case object B extends Format
 case object U extends Format
 case object UJ extends Format
 case object CSR extends Format
+// Compressed instruction formats (RVC)
+case object CR extends Format
+case object CI extends Format
+case object CB extends Format
