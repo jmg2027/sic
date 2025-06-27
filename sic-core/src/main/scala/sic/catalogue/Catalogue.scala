@@ -18,5 +18,12 @@ object SIC {
 
   /** Full instruction list visible to generators. */
   val catalogue: Vector[sic.InstrDesc] =
-    RV32I.catalogue
+    RV32I.catalogue ++
+      RV32M.catalogue ++
+      RV32A.catalogue ++
+      RV32C.catalogue ++
+      RV32Zba.catalogue ++
+      RV32Zbb.catalogue ++
+      RV32Zbc.catalogue ++
+      RV32Zbs.catalogue
 }
