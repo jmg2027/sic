@@ -6,6 +6,7 @@ on:
       - research/qlbi-aqr-sibling-20260331
     paths:
       - research/qlbi/cross_manager_null.py
+      - research/qlbi/ncen_probe.py
       - .github/workflows/qlbi-cross-manager-null.yml
   workflow_dispatch:
 
@@ -21,8 +22,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install DuckDB
-        run: python -m pip install 'duckdb==1.4.0'
+      - name: Install dependencies
+        run: python -m pip install 'duckdb==1.4.0' 'requests==2.32.5'
+      - name: Probe official SEC N-CEN adviser bridge schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qlbi_ncen_probe
+          python research/qlbi/ncen_probe.py \
+            --outdir qlbi_ncen_probe \
+            --email 132035258+jmg2027@users.noreply.github.com \
+            | tee qlbi_ncen_probe/console.json
       - name: Run same-date matched cross-manager null
         shell: bash
         run: |
@@ -35,13 +45,24 @@ jobs:
             | tee qlbi_cross_manager/console.json
       - name: Write summary
         shell: bash
-        run: cat qlbi_cross_manager/report.md >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          cat qlbi_cross_manager/report.md >> "$GITHUB_STEP_SUMMARY"
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo '## N-CEN schema probe' >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          m=json.load(open('qlbi_ncen_probe/schema_probe.json'))
+          for quarter,q in m['quarters'].items():
+              print(f"- {quarter}: {len(q['files'])} files, {q['size_bytes']} archive bytes")
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: qlbi-cross-manager-null-20260331
+          name: qlbi-cross-manager-null-and-ncen
           path: |
             qlbi_cross_manager/
+            qlbi_ncen_probe/
             research/qlbi/cross_manager_null.py
+            research/qlbi/ncen_probe.py
           if-no-files-found: warn
           retention-days: 30
