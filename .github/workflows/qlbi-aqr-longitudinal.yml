@@ -5,7 +5,7 @@ on:
     branches:
       - research/qlbi-aqr-sibling-20260331
     paths:
-      - research/qlbi/aqr_longitudinal.py
+      - research/qlbi/aqr_longitudinal_v2.py
       - .github/workflows/qlbi-aqr-longitudinal.yml
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p qlbi_aqr_longitudinal
-          python research/qlbi/aqr_longitudinal.py \
+          python research/qlbi/aqr_longitudinal_v2.py \
             --outdir qlbi_aqr_longitudinal \
             | tee qlbi_aqr_longitudinal/console.json
       - name: Write summary
@@ -37,9 +37,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: qlbi-aqr-longitudinal
+          name: qlbi-aqr-longitudinal-v2
           path: |
             qlbi_aqr_longitudinal/
-            research/qlbi/aqr_longitudinal.py
+            research/qlbi/aqr_longitudinal_v2.py
           if-no-files-found: warn
           retention-days: 30
