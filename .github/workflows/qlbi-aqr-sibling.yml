@@ -1,0 +1,93 @@
+name: QLBI AQR sibling pilot
+
+on:
+  push:
+    branches:
+      - research/qlbi-aqr-sibling-20260331
+    paths:
+      - research/qlbi/aqr_sibling_pilot.py
+      - .github/workflows/qlbi-aqr-sibling.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download exact SEC filing XML
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p qlbi_source qlbi_results
+          UA='QLBI public-filings research 132035258+jmg2027@users.noreply.github.com'
+          curl --fail --location --show-error --silent --compressed \
+            --retry 6 --retry-delay 2 --retry-all-errors \
+            --user-agent "$UA" \
+            -o qlbi_source/market_neutral.xml \
+            https://www.sec.gov/Archives/edgar/data/1444822/000207169126010941/primary_doc.xml
+          sleep 1
+          curl --fail --location --show-error --silent --compressed \
+            --retry 6 --retry-delay 2 --retry-all-errors \
+            --user-agent "$UA" \
+            -o qlbi_source/long_short.xml \
+            https://www.sec.gov/Archives/edgar/data/1444822/000207169126010957/primary_doc.xml
+          python - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          for name in ('market_neutral.xml','long_short.xml'):
+              p=Path('qlbi_source')/name
+              assert p.stat().st_size > 100000, (name,p.stat().st_size)
+              ET.parse(p)
+              print(name,p.stat().st_size)
+          PY
+          sha256sum qlbi_source/*.xml | tee qlbi_source/SOURCE_SHA256.txt
+
+      - name: Run stock-book comparison
+        run: |
+          python research/qlbi/aqr_sibling_pilot.py \
+            --a qlbi_source/market_neutral.xml \
+            --b qlbi_source/long_short.xml \
+            --out qlbi_results \
+            --permutations 5000 \
+            > qlbi_results/console.json
+
+      - name: Write summary
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          m=json.load(open('qlbi_results/metrics.json'))
+          x=m['metrics']; p=m['permutation_country']; t=m['synthetic_13f']
+          print('# QLBI AQR sibling stock-book pilot')
+          print()
+          print(f"Gate: `{m['gate']}`")
+          print()
+          print('| Metric | Value |')
+          print('|---|---:|')
+          for k in ('signed_pearson','signed_spearman','signed_cosine','long_weighted_jaccard','short_weighted_jaccard','long_support_jaccard','short_support_jaccard','top10_long_overlap_coefficient','top10_short_overlap_coefficient','opposite_side_rate_shared','weighted_same_side_rate'):
+              print(f'| {k} | {x.get(k)} |')
+          print(f"| country-null Pearson p | {p.get('signed_pearson_p_upper')} |")
+          print(f"| synthetic-13F visible sibling Pearson | {t.get('visible_sibling_pearson')} |")
+          print(f"| visible manager vs full signed Spearman | {t.get('visible_manager_vs_full_signed_spearman')} |")
+          print()
+          print('Factor-neutral and cross-manager gates remain pending by design.')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qlbi-aqr-sibling-20260331
+          path: |
+            qlbi_source/
+            qlbi_results/
+            research/qlbi/aqr_sibling_pilot.py
+          if-no-files-found: error
+          retention-days: 30
