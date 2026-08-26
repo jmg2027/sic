@@ -24,21 +24,24 @@ jobs:
       - name: Install DuckDB
         run: python -m pip install 'duckdb==1.4.0'
       - name: Run same-date matched cross-manager null
+        shell: bash
         run: |
+          set -euo pipefail
           mkdir -p qlbi_cross_manager
           python research/qlbi/cross_manager_null.py \
             --outdir qlbi_cross_manager \
-            --max-candidates 60 \
-            --min-side 150 \
+            --max-candidates 100 \
+            --min-side 100 \
             | tee qlbi_cross_manager/console.json
       - name: Write summary
         shell: bash
         run: cat qlbi_cross_manager/report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: qlbi-cross-manager-null-20260331
           path: |
             qlbi_cross_manager/
             research/qlbi/cross_manager_null.py
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
